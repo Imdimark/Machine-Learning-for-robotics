@@ -43,14 +43,19 @@ print ("\n")
 ##########################################
 print ("\nStarting input and comparing:\n")
 list_in_input=[]
-array_for_prod = []
+array_for_prod_T = []
+array_for_prod_F = []
 flag = 0
 while (1):
-  for insert in range (number_attributes):
-    digited = input("insert attribute, q for quit" + listed_attributes[insert])
-    list_in_input.append(digited) 
-    PXiY = attributes[listed_attributes[attribute]][listed_attribute[attribute_member]]
-    array_for_prod.append(PXiY)
+  for insert in range (number_attributes): # 0, 1, 2, 3
+    digited = input("insert attribute, q for quit" + listed_attributes[insert]) #1:outlook 2:temperature 3:humidity in a cicle
+    list_in_input.append(digited) #filling the history of the input
+    PxYT = attributes[listed_attributes[insert]][digited] #[name_sub_dictionary][element]
+    PXiYF = 1 - attributes[listed_attributes[insert]][digited]
+    print(PxYT)
+    print (PXiYF)
+    array_for_prod_T.append(PxYT)
+    array_for_prod_F.append(PXiYF)
     if (digited == "q"):
       break
 
@@ -58,9 +63,20 @@ while (1):
   print (list_in_input)
   print ("\n")
   
-  gx= PxT * np.prod(array_for_prod)
-  print(gx)
-  array_for_prod = [] #reset of the array
+  gxT= PxT * np.prod(array_for_prod_T)
+  gxF = PxF * np.prod(array_for_prod_F)
+  print(gxT, gxF)
+ 
+  max = np.maximum(gxT,gxF)
+  
+  if max ==gxT:
+    print (str("Play") + str(":") + True)
+  else:
+    print (str("Play") + str(":") + False)
+
+  array_for_prod_T = [] #reset of the array
+  array_for_prod_F = [] #reset of the array
+
   list_in_input = [] #reset of the array
   digited = input("insert attribute, q (second time) for quit")
   

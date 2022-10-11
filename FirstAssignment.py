@@ -41,47 +41,43 @@ print ("\nDict of probabilities: ")
 print (attributes)
 print ("\n")
 ##########################################
-print ("\nStarting input and comparing:\n")
-list_in_input=[]
-array_for_prod_T = []
-array_for_prod_F = []
-flag = 0
-while (1):
-  for insert in range (number_attributes): # 0, 1, 2, 3
-    digited = input("insert attribute, q for quit" + listed_attributes[insert]) #1:outlook 2:temperature 3:humidity in a cicle
-    list_in_input.append(digited) #filling the history of the input
-    PxYT = attributes[listed_attributes[insert]][digited] #[name_sub_dictionary][element]
-    PXiYF = 1 - attributes[listed_attributes[insert]][digited]
-    print(PxYT)
-    print (PXiYF)
-    array_for_prod_T.append(PxYT)
-    array_for_prod_F.append(PXiYF)
-    if (digited == "q"):
-      break
+array_for_prod_T = [] #reset of the array
+array_for_prod_F = [] #reset of the array
+targetClass_row = []
+test_set = input("\nInsert the name of the test set ( .csv): \n ")
+ts = pd.read_csv(test_set)
+ts.head()
+number_attributes_ts = (ts.shape[1])#shape [righe][colonne]
+number_set_ts = ts.shape[0]
+if (number_attributes_ts != number_attributes): # must be equal since one row to number attributes has been removed
+  ts = ts.iloc[: , :-1]
 
-  print ("You have inserted these attribute: ")
-  print (list_in_input)
-  print ("\n")
+print("\nSome line of dataset are: ")
+print(ts.head())
+print ("\n")
+for q in range (0, number_set_ts, 1): #for every row of the test set 1 10
   
+  for insert in range (number_attributes_ts-1): # 0, 1, 2, 3
+    #digited = input("insert attribute, q for quit" + listed_attributes[insert]) #1:outlook 2:temperature 3:humidity in a cicle
+    #list_in_input.append(digited) #filling the history of the input
+    PxYT = attributes[listed_attributes[insert]][ts.iat[q,insert]] #[name_sub_dictionary][element]        elemento q jcolonna matrice
+    PXiYF = 1 - attributes[listed_attributes[insert]][ts.iat[q,insert]]
+    if (PxYT != 0):
+      array_for_prod_T.append(PxYT)
+    if (PXiYF != 0):
+      array_for_prod_F.append(PXiYF)    
   gxT= PxT * np.prod(array_for_prod_T)
   gxF = PxF * np.prod(array_for_prod_F)
-  print(gxT, gxF)
- 
+  print(q, gxT, gxF)
   max = np.maximum(gxT,gxF)
-  
   if max ==gxT:
-    print (str("Play") + str(":") + True)
+    targetClass_row.append(True)
   else:
-    print (str("Play") + str(":") + False)
-
+    targetClass_row.append(False)
   array_for_prod_T = [] #reset of the array
   array_for_prod_F = [] #reset of the array
-
-  list_in_input = [] #reset of the array
-  digited = input("insert attribute, q (second time) for quit")
-  
-  if (digited == "q"):
-    break
-  flag = 0
-
-
+print("Target class row: ")
+print (targetClass_row)
+ts.insert(number_attributes_ts,list(wd)[number_attributes], targetClass_row ) #add 1 row on the right
+print ("\n Result:\n" )
+print (ts)

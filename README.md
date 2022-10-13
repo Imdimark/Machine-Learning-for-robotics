@@ -1,4 +1,4 @@
-# Machine-learning-for-robotics-projects
+# Machine-learning-for-robotics-project
 
 
 python3 name_trainingdataSet name_testSet

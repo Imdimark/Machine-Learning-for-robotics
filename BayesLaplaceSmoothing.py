@@ -78,4 +78,4 @@ if (number_attributes_ts == number_attributes + 1): # target class is present
 
 ts.insert(number_attributes_ts,list(wd)[number_attributes], targetClass_row ) #add 1 row on the right
 print ("\n Result:\n" )
-print (ts)
+print (ts) 

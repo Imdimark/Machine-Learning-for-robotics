@@ -49,6 +49,7 @@ for q in range (0, number_set_ts, 1): #for every row of the test set 1 10
     #digited = input("insert attribute, q for quit" + listed_attributes[insert]) #1:outlook 2:temperature 3:humidity in a cicle
     #list_in_input.append(digited) #filling the history of the input
     PxYT = attributes[listed_attributes[insert]][ts.iat[q,insert]] #[name_sub_dictionary][element]        
+    #PxYT = attributes[listed_attributes[insert]][ts.iat[q,insert]] #[name_sub_dictionary][element]        
     PXiYF = 1 - PxYT
     print (PxYT ,PXiYF)
     if (PxYT != 0):
@@ -74,8 +75,8 @@ if (number_attributes_ts == number_attributes + 1): # target class is present
       NumbErr = NumbErr + 1
   print (NumbErr)
   ErrorRate = NumbErr / number_set_ts
-  print ("error rate" + ErrorRate)
+  print ("error rate: " + ErrorRate)
 
 ts.insert(number_attributes_ts,list(wd)[number_attributes], targetClass_row ) #add 1 row on the right
 print ("\n Result:\n" )
-print (ts) 
+print (ts)

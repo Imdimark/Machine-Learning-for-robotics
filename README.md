@@ -1,7 +1,9 @@
 # Machine-learning-for-robotics-project
 
 
-python3 name_trainingdataSet name_testSet
+##How to launch:
 
-x = 0 if you want to use a .txt file and automatically convert it in .csv, x = 1 if you want to use a .csv file
- python .\FirstAssignment.py .\Weatherdataset.txt .\test_dataset.csv
+python FirstAssignment.py <name_dataset>.txt
+
+
+The code automatically converts in .csv format, every time the code is launched a new .csv is created (the old one, if present, is deleted).

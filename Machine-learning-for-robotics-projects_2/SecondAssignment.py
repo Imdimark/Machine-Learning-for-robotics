@@ -1,6 +1,7 @@
 import ast
 from http.client import FOUND
 from importlib.resources import contents
+from time import sleep
 from tkinter.tix import COLUMN
 from tokenize import Double
 import numpy as np
@@ -12,23 +13,25 @@ import matplotlib.pyplot as plt
 col = 1
 number_subdataset = 9
 
-def plot(x, y, b):
+def plot(x, y, w):
     # plotting the actual points as scatter plot
-    plt.scatter(x, y, color = "m",
-               marker = "o", s = 30)
+    x = np.array(x)
+    y = np.array(y)
+    plt.scatter(x, y, color = "m",marker = "o", s = 30)
   
     # predicted response vector
-    y_pred = b[0] + b[1]*x
+    Y = w*x
   
     # plotting the regression line
-    plt.plot(x, y_pred, color = "g")
+    plt.plot(x, Y, color = "g")
   
     # putting labels
     plt.xlabel('x')
     plt.ylabel('y')
   
     # function to show plot
-    plt.show()
+    plt.draw()
+    sleep(2)
 
 
 print ("Hello!")
@@ -48,21 +51,18 @@ tArray = list(turkish_dataset[turkish_dataset.columns[1]])
 w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
 plot(xArray, tArray, w)
 
-
-
 ##############2.2##########################
-w = []
 for ns in range (number_subdataset):
   random_subset = turkish_dataset.sample(n = 10, ignore_index =True)
 
   xArray = list(random_subset[random_subset.columns[0]])
   tArray = list(random_subset[random_subset.columns[1]])
-  w.append((np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray)))
+  w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
   plot(xArray, tArray, w)
 
 ############2.3####################
-xArray = list(car_dataset[car_dataset.columns[0]])
-tArray = list(car_dataset[car_dataset.columns[1]])
+xArray = list(car_dataset[car_dataset.columns[1]])
+tArray = list(car_dataset[car_dataset.columns[4]])
 w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
 plot(xArray, tArray, w)
 

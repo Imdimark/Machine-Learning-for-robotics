@@ -1,6 +1,8 @@
 import ast
 from http.client import FOUND
 from importlib.resources import contents
+from statistics import mean
+from tabnanny import check
 from time import sleep
 from tkinter.tix import COLUMN
 from tokenize import Double
@@ -13,127 +15,103 @@ import matplotlib.pyplot as plt
 col = 1
 number_subdataset = 9
 
-def plot(x, y, w):
-    # plotting the actual points as scatter plot
-    x = np.array(x)
-    y = np.array(y)
-    plt.scatter(x, y, color = "m",marker = "o", s = 30)
-  
-    # predicted response vector
-    Y = w*x
-  
-    # plotting the regression line
-    plt.plot(x, Y, color = "g")
-  
-    # putting labels
-    plt.xlabel('x')
-    plt.ylabel('y')
-  
-    # function to show plot
-    plt.draw()
-    sleep(2)
-
-
 print ("Hello!")
-
 car_dataset= pd.read_csv("mtcarsdata-4features.csv") 
 turkish_dataset= pd.read_csv("turkish-se-SP500vsMSCI.csv") 
-
 number_attributes_car_dataset = (car_dataset.shape[1] - 1 )#shape [righe][colonne]
 number_set_car_dataset = car_dataset.shape[0]
-
 number_attributes_turkish_dataset = (turkish_dataset.shape[1] - 1 )#shape [righe][colonne]
 number_set_turkish_dataset = turkish_dataset.shape[0]
-
 ##############2.1#########################
 xArray = list(turkish_dataset[turkish_dataset.columns[0]])
 tArray = list(turkish_dataset[turkish_dataset.columns[1]])
 w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
-plot(xArray, tArray, w)
-
+x = np.array(xArray)
+y = np.array(tArray)
+Y = w*x
+plt.scatter(x, y, color = "m",marker = "o", s = 30)
+plt.plot(x, Y, color = "g")
+plt.xlabel('SP')
+plt.ylabel('MSCI')
 ##############2.2##########################
+figure, axis = plt.subplots(9, 1)
+figure.suptitle('10 sublots')
 for ns in range (number_subdataset):
-  random_subset = turkish_dataset.sample(n = 10, ignore_index =True)
-
+  random_subset = turkish_dataset.sample(frac = .1, ignore_index =True)
   xArray = list(random_subset[random_subset.columns[0]])
   tArray = list(random_subset[random_subset.columns[1]])
   w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
-  plot(xArray, tArray, w)
+  x = np.array(xArray,dtype='float64')
+  y = np.array(tArray,dtype='float64')
+  Y = w*x
+  axis[ns].scatter(x, y, color = "m",marker = "o", s = 30)
+  axis[ns].plot(x, Y, color = "g")
+  plt.xlabel('SP')
+  plt.ylabel('MSCI')
+plt.show()
 
 ############2.3####################
 xArray = list(car_dataset[car_dataset.columns[1]])
 tArray = list(car_dataset[car_dataset.columns[4]])
-w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
-plot(xArray, tArray, w)
+#w = (np.sum(tArray)*np.sum(xArray))/pow(2,np.sum(xArray))
+
+x = np.array(xArray)
+y = np.array(tArray)
+
+x_ = np.mean(x)
+y_ = np.mean(y)
+
+
+w1 = np.sum((x - x_)*(y - y_)) / np.sum(pow(2, (x - x_)) )
+w0 = y_ - (w1 * x_) 
+
+
+Y = w0 + (x *w1)
+print (Y)
+plt.scatter(x, y, color = "m",marker = "o", s = 30)
+plt.plot(x, Y, color = "g")
+plt.xlabel('MPG')
+plt.ylabel('Weight')
+plt.show()
+
+
+
+
+##########2.4##############
+
+
+cols = [0,2,3,4]
+xArray = car_dataset [car_dataset.columns[cols]]
+xArray = np.array(xArray)
+#print (xArray)
+#print(len(xArray))
+
+
+ceckArray = []
+for qq in range (len(xArray)):
+  if xArray[qq][0] not in ceckArray:
+    ceckArray.append (xArray[qq][0])
+
+for qq in range (len(xArray)):
+  xArray[qq][0] = ceckArray.index(xArray[qq][0])
+
+xArray = np.array(xArray,dtype='float64')
+yArray = np.array(car_dataset[car_dataset.columns[1]],dtype='float64')
+
+print (yArray)
+
+q = np.linalg.pinv(xArray)
+
+print (q)
+print("weeeeeeeeee")
+w = q * yArray
+print (w)
+
+
+w = np.dot(q,yArray)
+print (w)
 
 
 
 
 
-
-"""
-
-attributes = {} 
-attributes_v = {}  #it contains the 1/v value only
-PY = (list(wd[wd.columns[wd.shape[1]-1]]).count(True))/number_set #prior probability of class True #### 0.6 qualcosa
-PN = (list(wd[wd.columns[wd.shape[1]-1]]).count(False))/number_set#prior probability of class False
-for aa in range (0,number_attributes,1): 
-  attributes[wd.columns[aa]] = {}
-  attributes_v[wd.columns[aa]] = {}
-  for ab in range (len(list(set(wd[wd.columns[aa]])))): #ab vara nel range dei singoli, interni ad aa colonna. ss sarebbe as esempio overcast,rainy,sunny
-    ss =(list(set(wd[wd.columns[aa]])))[ab]
-    counter = 0
-    for CheckEqualTrue in range (number_set):
-      if list(wd[wd.columns[aa]])[CheckEqualTrue] == ss: 
-        if list(wd[wd.columns[wd.shape[1]-1]])[CheckEqualTrue] == True:
-          counter = counter + 1
-#################Laplace smoother###############            
-    v = len(list(set(wd[wd.columns[aa]])))
-    attributes_v[wd.columns[aa]][ss] = v
-    Pxty =(counter + a) / (((list(wd[wd.columns[wd.shape[1]-1]]).count(True))) + (a*v))  #Pxtf = 1-Pxty
-    attributes[wd.columns[aa]][ss] = Pxty
-listed_attributes= list (attributes) #outlook temperature humidity
-print ("Learning phase ended, starting classification with the test set \n")
-array_for_prod_T = [] #reset of the array
-array_for_prod_F = [] #reset of the array
-targetClass_row = []
-ts.head()
-number_attributes_ts = (ts.shape[1])#shape [righe][colonne]
-print(number_attributes_ts)
-number_set_ts = ts.shape[0]
-print (attributes)
-for q in range (0, number_set_ts, 1): #for every row of the test set 1 10
-  for insert in range (number_attributes_ts-1): # 0, 1, 2, 3
-    # se viene trovato dentro il set 
-    listed_element_attributes = list(attributes[listed_attributes[insert]])
-    if ts.iat[q,insert] in listed_element_attributes:
-      PxYT = attributes[listed_attributes[insert]][ts.iat[q,insert]] #[name_sub_dictionary][element]        
-      PXiYF = 1 - PxYT
-    else: ## Adjust if the test_set's vale is not present in the training_set
-      PxYT = 1/attributes_v[listed_attributes[insert]][wd.iat[q,insert]]
-      PXiYF = 1 - PxYT  
-    array_for_prod_T.append(PxYT)
-    array_for_prod_F.append(PXiYF)   
-  gxT= PY * np.prod(array_for_prod_T)
-  gxF = PN * np.prod(array_for_prod_F)
-  max = np.maximum(gxT,gxF)
-  if max == gxT:
-    targetClass_row.append(True)
-  elif max == gxF:
-    targetClass_row.append(False)
-  array_for_prod_T = [] #reset of the array
-  array_for_prod_F = [] #reset of the array
-print (targetClass_row)
-NumbErr = 0
-if (number_attributes_ts == number_attributes + 1): # target class is present
-  for err in range (number_set_ts):
-    if targetClass_row[err] == list(wd[wd.columns[number_attributes_ts-1]])[err] :
-      NumbErr = NumbErr + 1
-  ErrorRate = NumbErr / number_set_ts
-ts = ts.iloc[: , :-1]
-ts.insert((number_attributes_ts-1), list(wd)[number_attributes],targetClass_row )
-print ("\n Result:\n" )
-print (ts)
-print ("Error rate: ")
-print (ErrorRate)
-"""

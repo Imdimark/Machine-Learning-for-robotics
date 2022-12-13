@@ -15,10 +15,10 @@ import numpy as np
 import sys
 import datetime
 
-def additional_point(confusion_matrix):
-    array = np.zeros(6)
+def additional_point(confusion_matrix,lenn):
+    array = np.zeros(5)
     n_correct = np.trace(confusion_matrix)    
-    accuracy = n_correct/len(test_X_images) # is equal to correct rate calculated in point 3
+    accuracy = n_correct/lenn # is equal to correct rate calculated in point 3
 
     correct_0 = confusion_matrix[0][0]   # 1 if it is the number, 0 if not
     false_0 = confusion_matrix[0][1]
@@ -31,10 +31,10 @@ def additional_point(confusion_matrix):
     F_measure = 2 * ( (precision *recall)/(precision + recall) )
     array[0] = (sensitivity)
     array[1] = (specifiticy)
-    array[2] = (precision)
-    array[3] = (recall)
-    array[4] = (F_measure)
-    array[5] = (accuracy)   
+    #array[2] = (precision)
+    array[2] = (recall)
+    array[3] = (F_measure)
+    array[4] = (accuracy)   
     return array
 
 def calculate_dist(x,y): 
@@ -101,12 +101,14 @@ if np.max(number_kTest) >= number_of and np.max(number_kTest) > 0: #check  0 < k
 if len(test_X_images[1])!= len(train_X_images[1]): #check taht training set e test set has the same column
     print ("error in number of columns")
     sys.exit()
+    
 ############# point 2 #############
+"""
 correct_rate_array = []
 for k_ in range (len(number_kTest)):    
     k = number_kTest[k_] #k that i'm using in this cycle
     print ("Calculation under this K: " + str(k))
-    winner_array,correct_rate= Classifier (test_X_images, test_y_labels, train_X_images, train_y_labels, k, classes)
+    winner_array,correct_rate,confusion_matrix= Classifier (test_X_images, test_y_labels, train_X_images, train_y_labels, k, classes)
     classification_array.append(winner_array)
     correct_rate_array.append (correct_rate)
 duration = datetime.datetime.now() - start
@@ -153,7 +155,7 @@ for t in range (len(old_classes)):
     for k_ in range (len(number_kTest)):    
         k = number_kTest[k_] #k that i'm using in this cycle
         print ("Calculation under this K: " + str(k))
-        winner_array,correct_rate = Classifier (test_X_images, test_y_labels_2classes, train_X_images, train_y_labels_2classes, k, classes)
+        winner_array,correct_rate,confusion_matrix = Classifier (test_X_images, test_y_labels_2classes, train_X_images, train_y_labels_2classes, k, classes)
         correct_rate_array.append(correct_rate)
 
         
@@ -165,8 +167,9 @@ for t in range (len(old_classes)):
 duration = datetime.datetime.now() - start
 print ("duration of the point 3 :" + str(duration))
 plt.show()
-
+"""
 ############# additional point #############
+old_classes = classes
 start = datetime.datetime.now()
 print ("starting time additional point: " + str (start))
 correct_rate = [] #clean the array
@@ -197,24 +200,25 @@ for t in range (len(old_classes)):
     for k_ in range (len(number_kTest)):
         k = number_kTest[k_] #k that i'm using in this cycle
         print ("Calculation under this K: " + str(k))
-        pluto = np.zeros((10,6))
+        pluto = np.zeros((10,5))
         for sample in range(10):
             indexs = np.random.randint (1, 10000, 1000)
             test_X_images_sampled = test_X_images [indexs]
             test_y_labels_sampled = test_y_labels [indexs]
             winner_array,correct_rate,confusion_matrix = Classifier (test_X_images_sampled, test_y_labels_2classes, train_X_images, train_y_labels_2classes, k, classes)
-            pluto[sample] = additional_point(confusion_matrix) 
-        standard_deviation = np.zeros(6)
-        averages = [0,0,0,0,0,0,0,0]
-        for x in range (6):
+            print (correct_rate)
+            pluto[sample] = additional_point(confusion_matrix,len(test_y_labels_sampled) )
+        standard_deviation = np.zeros(5)
+        averages = [0,0,0,0,0,0,0]
+        for x in range (5):
             standard_deviation[x] = np.std(pluto[:,x]) 
             averages[0] = t
             averages [1] = k             
             averages[x+2] = ( str(np.mean(pluto[:,x])) + ('(') + str(np.std(pluto[:,x]) )  + (')') )  # sensitivity specificity precision recall f_measure recall
         table[c ] = averages   # row = k, column = numbers
         c = c + 1
-        
-df = pd.DataFrame(table, columns = ("number", "k_number" ,"sensitivity", "specificity", "precision", "recall", "f_measure", "recall"))
+
+df = pd.DataFrame(table, columns = ("number", "k_number" ,"sensitivity/recall", "specificity", "precision", "f_measure", "accuracy"))
 df.to_csv("./Table.csv", sep=',',index=False)
 print (df)
 duration = datetime.datetime.now() - start

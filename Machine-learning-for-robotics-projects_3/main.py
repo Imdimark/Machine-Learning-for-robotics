@@ -31,8 +31,8 @@ def additional_point(confusion_matrix,lenn):
     F_measure = 2 * ( (precision *recall)/(precision + recall) )
     array[0] = (sensitivity)
     array[1] = (specifiticy)
-    #array[2] = (precision)
-    array[2] = (recall)
+    array[2] = (precision)
+    #array[2] = (recall)
     array[3] = (F_measure)
     array[4] = (accuracy)   
     return array
@@ -103,7 +103,7 @@ if len(test_X_images[1])!= len(train_X_images[1]): #check taht training set e te
     sys.exit()
     
 ############# point 2 #############
-"""
+
 correct_rate_array = []
 for k_ in range (len(number_kTest)):    
     k = number_kTest[k_] #k that i'm using in this cycle
@@ -167,9 +167,9 @@ for t in range (len(old_classes)):
 duration = datetime.datetime.now() - start
 print ("duration of the point 3 :" + str(duration))
 plt.show()
-"""
+
 ############# additional point #############
-old_classes = classes
+
 start = datetime.datetime.now()
 print ("starting time additional point: " + str (start))
 correct_rate = [] #clean the array
@@ -206,7 +206,6 @@ for t in range (len(old_classes)):
             test_X_images_sampled = test_X_images [indexs]
             test_y_labels_sampled = test_y_labels [indexs]
             winner_array,correct_rate,confusion_matrix = Classifier (test_X_images_sampled, test_y_labels_2classes, train_X_images, train_y_labels_2classes, k, classes)
-            print (correct_rate)
             pluto[sample] = additional_point(confusion_matrix,len(test_y_labels_sampled) )
         standard_deviation = np.zeros(5)
         averages = [0,0,0,0,0,0,0]
